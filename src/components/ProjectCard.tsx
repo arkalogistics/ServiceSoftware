@@ -1,5 +1,6 @@
 import { Box, Heading, Text, Badge, Stack, Button } from "@chakra-ui/react";
 import Link from "next/link";
+import type { Route } from "next";
 
 export default function ProjectCard({ project }: { project: any }) {
   const cover = project.coverImage as string | undefined;
@@ -16,7 +17,7 @@ export default function ProjectCard({ project }: { project: any }) {
           <Heading size="md">{project.title}</Heading>
           {project.description && <Text color="gray.300" noOfLines={2}>{project.description}</Text>}
           <Badge variant="subtle" colorScheme={project.status === "Active" ? "green" : project.status === "Completed" ? "blue" : "gray"} w="fit-content">{project.status}</Badge>
-          <Button as={Link} href={`/projects/${project.id}`} size="sm">Abrir</Button>
+          <Button as={Link} href={`/projects/${project.id}` as Route} size="sm">Abrir</Button>
         </Stack>
       </Box>
     </Box>

@@ -2,6 +2,7 @@ import { prisma } from "@/src/lib/prisma";
 import { Box, Heading, Text, Stack, Button, SimpleGrid, Badge, HStack, Progress, Flex } from "@chakra-ui/react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Route } from "next";
 
 interface Params { params: { id: string } }
 
@@ -59,7 +60,7 @@ export default async function ProjectPage({ params }: Params) {
           bullets={["INE frente y reverso", "Firma manuscrita digital", "Comprobante de domicilio"]}
           status={kycDone ? "Completado" : kycParties ? "En progreso" : "Pendiente"}
           ctaLabel={kycDone ? "Revisar KYC" : "Completar KYC"}
-          href={`/projects/${params.id}/kyc`}
+          href={`/projects/${params.id}/kyc` as Route}
           colorScheme={kycDone ? "green" : "blue"}
         />
         <ActionCard
@@ -69,7 +70,7 @@ export default async function ProjectPage({ params }: Params) {
           bullets={["Completa datos del contrato", "Firma del cliente", "Firma del prestador"]}
           status={cSigned ? "Completado" : contract ? "En progreso" : "Pendiente"}
           ctaLabel={contract ? (cSigned ? "Ver contrato" : "Continuar firma") : "Crear contrato"}
-          href={`/projects/${params.id}/contract`}
+          href={`/projects/${params.id}/contract` as Route}
           colorScheme={cSigned ? "green" : "blue"}
         />
         <ActionCard
@@ -79,7 +80,7 @@ export default async function ProjectPage({ params }: Params) {
           bullets={["Crea documentos del proyecto", "Registra horas y notas", "Actualiza estados"]}
           status={docsCount > 0 ? `${docsCount} creados` : "Pendiente"}
           ctaLabel={docsCount > 0 ? "Gestionar proceso" : "Agregar tarea"}
-          href={`/projects/${params.id}/documents`}
+          href={`/projects/${params.id}/documents` as Route}
           colorScheme={docsCount > 0 ? "green" : "blue"}
         />
       </SimpleGrid>
@@ -102,7 +103,7 @@ function ActionCard({
   description: string;
   bullets: string[];
   status: string;
-  href: string;
+  href: Route;
   colorScheme?: string;
   ctaLabel?: string;
 }) {

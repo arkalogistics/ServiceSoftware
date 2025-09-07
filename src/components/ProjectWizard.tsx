@@ -27,6 +27,7 @@ import {
 } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import type { Route } from "next";
 import { useSession } from "next-auth/react";
 
 const MotionBox = motion(Box);
@@ -170,7 +171,7 @@ export default function ProjectWizard() {
     if (ops.length) await Promise.allSettled(ops);
 
     toast({ status: "success", title: "Proyecto creado" });
-    router.push(`/projects/${project.id}`);
+    router.push(`/projects/${project.id}` as Route);
   }
 
   const Summary = useMemo(() => (

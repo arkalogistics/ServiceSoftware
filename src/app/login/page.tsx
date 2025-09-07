@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Box, Button, FormControl, FormLabel, Heading, Input, Stack, Alert, AlertIcon } from "@chakra-ui/react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import type { Route } from "next";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,13 @@ export default function LoginPage() {
   const router = useRouter();
   const params = useSearchParams();
 
-  const callbackUrl = params.get("callbackUrl") || "/dashboard";
+  // Sanitize and type-narrow callback URL to internal routes only
+  const rawCallback = params.get("callbackUrl");
+  const callbackUrl: Route = (
+    rawCallback && rawCallback.startsWith("/") && !rawCallback.startsWith("//")
+      ? rawCallback
+      : "/dashboard"
+  ) as Route;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();

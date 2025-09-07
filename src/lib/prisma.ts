@@ -13,15 +13,13 @@ declare global {
 if (!global.prisma) {
   if (useLibsql) {
     // Lazy import to keep dev without these deps
-    const { createClient } = await import("@libsql/client");
     const { PrismaLibSQL } = await import("@prisma/adapter-libsql");
 
-    const libsql = createClient({
+    const adapter = new PrismaLibSQL({
       url: process.env.LIBSQL_URL!,
       authToken: process.env.LIBSQL_AUTH_TOKEN,
-    });
-    const adapter = new PrismaLibSQL(libsql);
-    prisma = new PrismaClient({ adapter });
+    } as any);
+    prisma = new PrismaClient({ adapter } as any);
   } else {
     prisma = new PrismaClient();
   }
