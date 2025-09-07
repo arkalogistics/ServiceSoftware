@@ -1,14 +1,11 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { getPrisma } from "./prisma";
 import bcrypt from "bcryptjs";
 
 export async function getAuthOptions(): Promise<NextAuthOptions> {
-  const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
-  const prisma = isBuildPhase ? undefined : await getPrisma();
+  // No DB adapter: we use JWT sessions only and query Prisma in authorize() as needed.
   return {
-    ...(prisma ? { adapter: PrismaAdapter(prisma) } : {}),
     session: { strategy: "jwt" },
     pages: {},
     providers: [
