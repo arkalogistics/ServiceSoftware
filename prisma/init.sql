@@ -8,8 +8,6 @@ CREATE TABLE IF NOT EXISTS User (
   emailVerified DATETIME,
   image TEXT,
   passwordHash TEXT,
-  twoFactorEnabled INTEGER NOT NULL DEFAULT 0,
-  twoFactorSecret TEXT,
   role TEXT NOT NULL DEFAULT 'user',
   createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updatedAt DATETIME NOT NULL

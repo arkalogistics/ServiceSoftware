@@ -26,7 +26,7 @@ export default async function Home() {
   return (
     <Stack spacing={6} py={10}>
       <Heading size="xl">Organiza tus proyectos con KYC y contratos</Heading>
-      <Text color="gray.300">Next.js + Chakra UI + Prisma (SQLite) + Auth 2FA.</Text>
+      <Text color="gray.300">Next.js + Chakra UI + Prisma (SQLite) + Auth.</Text>
       <Box>
         <Button as={Link} href="/register" mr={3}>Crear cuenta</Button>
         <Button as={Link} href="/login" variant="outline">Entrar</Button>

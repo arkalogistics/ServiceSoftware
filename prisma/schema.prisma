@@ -17,8 +17,6 @@ model User {
 
   // Auth
   passwordHash      String?
-  twoFactorEnabled  Boolean   @default(false)
-  twoFactorSecret   String?
   role              String    @default("user")
 
   accounts          Account[]

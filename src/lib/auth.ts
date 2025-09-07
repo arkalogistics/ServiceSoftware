@@ -16,8 +16,7 @@ export async function getAuthOptions(): Promise<NextAuthOptions> {
         name: "Credentials",
         credentials: {
           email: { label: "Email", type: "text" },
-          password: { label: "Password", type: "password" },
-          totp: { label: "2FA", type: "text" }
+          password: { label: "Password", type: "password" }
         },
         async authorize(credentials) {
           if (!credentials?.email || !credentials?.password) return null;
@@ -26,14 +25,6 @@ export async function getAuthOptions(): Promise<NextAuthOptions> {
           if (!user || !user.passwordHash) return null;
           const ok = await bcrypt.compare(credentials.password, user.passwordHash);
           if (!ok) return null;
-
-          if (user.twoFactorEnabled) {
-            const code = (credentials.totp || "").replace(/\s+/g, "");
-            if (!code) return null;
-            const { authenticator } = await import("otplib");
-            const valid = authenticator.check(code, user.twoFactorSecret || "");
-            if (!valid) return null;
-          }
 
           return {
             id: user.id,

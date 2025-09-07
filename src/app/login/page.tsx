@@ -8,7 +8,7 @@ import type { Route } from "next";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [totp, setTotp] = useState("");
+  // 2FA removed
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const params = useSearchParams();
@@ -24,7 +24,7 @@ export default function LoginPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const res = await signIn("credentials", { email, password, totp, redirect: false });
+    const res = await signIn("credentials", { email, password, redirect: false });
     if (res?.error) {
       setError("Credenciales inválidas o 2FA incorrecto");
     } else {
@@ -48,10 +48,7 @@ export default function LoginPage() {
             <FormLabel>Contraseña</FormLabel>
             <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </FormControl>
-          <FormControl>
-            <FormLabel>Código 2FA (si está activo)</FormLabel>
-            <Input type="text" value={totp} onChange={(e) => setTotp(e.target.value)} />
-          </FormControl>
+          {/* 2FA removed */}
           <Button type="submit" colorScheme="blue">Entrar</Button>
         </Stack>
       </form>
