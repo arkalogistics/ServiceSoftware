@@ -1,15 +1,16 @@
-import { prisma } from "@/src/lib/prisma";
+import { getPrisma } from "@/src/lib/prisma";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/src/lib/auth";
+import { getAuthOptions } from "@/src/lib/auth";
 import { Box, Button, Heading, SimpleGrid, Flex, Spacer } from "@chakra-ui/react";
 import Link from "next/link";
 import ProjectCard from "@/src/components/ProjectCard";
 import FAB from "@/src/components/FAB";
 
 export default async function ProjectsPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(await getAuthOptions());
   const userId = (session?.user as any)?.id as string | undefined;
   if (!userId) return null;
+  const prisma = await getPrisma();
   const projects = await prisma.project.findMany({ where: { ownerId: userId }, orderBy: { createdAt: "desc" } });
   return (
     <Box>

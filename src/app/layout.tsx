@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import { Box, Flex, HStack, Spacer, Button, Container, Text } from "@chakra-ui/react";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/src/lib/auth";
+import { getAuthOptions } from "@/src/lib/auth";
 import SignOutButton from "@/src/components/SignOutButton";
 import MobileNav from "@/src/components/MobileNav";
 
@@ -13,7 +13,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(await getAuthOptions());
 
   return (
     <html lang="es">

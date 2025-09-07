@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/src/lib/prisma";
+import { getPrisma } from "@/src/lib/prisma";
 import { registerSchema } from "@/src/lib/validators";
 import bcrypt from "bcryptjs";
 import { rateLimit } from "@/src/lib/rateLimiter";
@@ -16,6 +16,7 @@ export async function POST(req: Request) {
   if (!parse.success) return NextResponse.json({ error: "Invalid data" }, { status: 400 });
 
   const { name, email, password } = parse.data;
+  const prisma = await getPrisma();
   const exists = await prisma.user.findUnique({ where: { email } });
   if (exists) return NextResponse.json({ error: "Email ya registrado" }, { status: 409 });
 
@@ -23,4 +24,3 @@ export async function POST(req: Request) {
   const user = await prisma.user.create({ data: { name, email, passwordHash } });
   return NextResponse.json({ id: user.id, email: user.email });
 }
-

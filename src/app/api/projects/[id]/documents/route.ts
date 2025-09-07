@@ -1,25 +1,27 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/src/lib/auth";
-import { prisma } from "@/src/lib/prisma";
+import { getAuthOptions } from "@/src/lib/auth";
+import { getPrisma } from "@/src/lib/prisma";
 import { documentSchema } from "@/src/lib/validators";
 
 interface Params { params: { id: string } }
 
 export async function GET(_: Request, { params }: Params) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(await getAuthOptions());
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const prisma = await getPrisma();
   const docs = await prisma.projectDocument.findMany({ where: { projectId: params.id }, orderBy: { createdAt: "desc" } });
   return NextResponse.json({ documents: docs });
 }
 
 export async function POST(req: Request, { params }: Params) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(await getAuthOptions());
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const json = await req.json();
   const parse = documentSchema.safeParse({ ...json, projectId: params.id });
   if (!parse.success) return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   const { assigneeIds = [], startDate, endDate, ...rest } = parse.data;
+  const prisma = await getPrisma();
   const doc = await prisma.projectDocument.create({
     data: {
       ...rest,
@@ -31,4 +33,3 @@ export async function POST(req: Request, { params }: Params) {
   });
   return NextResponse.json({ document: doc });
 }
-

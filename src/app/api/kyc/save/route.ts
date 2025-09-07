@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/src/lib/auth";
-import { prisma } from "@/src/lib/prisma";
+import { getAuthOptions } from "@/src/lib/auth";
+import { getPrisma } from "@/src/lib/prisma";
 import { kycPartySchema } from "@/src/lib/validators";
 
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(await getAuthOptions());
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const json = await req.json();
   const parse = kycPartySchema.safeParse(json);
@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     signatureDataUrl,
   } = parse.data;
 
+  const prisma = await getPrisma();
   const party = await prisma.kYCParty.create({
     data: { projectId, role, name, email, phone, rfc, address, isCompany },
   });
@@ -47,4 +48,3 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ ok: true, partyId: party.id });
 }
-

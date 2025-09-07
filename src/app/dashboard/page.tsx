@@ -1,13 +1,14 @@
-import { prisma } from "@/src/lib/prisma";
+import { getPrisma } from "@/src/lib/prisma";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/src/lib/auth";
+import { getAuthOptions } from "@/src/lib/auth";
 import { Box, Heading, Text, SimpleGrid, Button } from "@chakra-ui/react";
 import Link from "next/link";
 
 export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(await getAuthOptions());
   const userId = (session?.user as any)?.id as string | undefined;
   if (!userId) return null;
+  const prisma = await getPrisma();
   const count = await prisma.project.count({ where: { ownerId: userId } });
   return (
     <Box>
@@ -22,4 +23,3 @@ export default async function Dashboard() {
     </Box>
   );
 }
-

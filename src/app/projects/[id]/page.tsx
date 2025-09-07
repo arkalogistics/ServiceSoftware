@@ -1,4 +1,4 @@
-import { prisma } from "@/src/lib/prisma";
+import { getPrisma } from "@/src/lib/prisma";
 import { Box, Heading, Text, Stack, Button, SimpleGrid, Badge, HStack, Progress, Flex } from "@chakra-ui/react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -7,6 +7,7 @@ import type { Route } from "next";
 interface Params { params: { id: string } }
 
 export default async function ProjectPage({ params }: Params) {
+  const prisma = await getPrisma();
   const project = await prisma.project.findUnique({
     where: { id: params.id },
     include: { parties: { include: { idDocs: true, proofs: true } }, contract: true, documents: true },
