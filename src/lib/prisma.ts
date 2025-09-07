@@ -1,8 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 
-// Optional: Turso/libSQL in production via Prisma driver adapter
-let prisma: PrismaClient;
-
 const useLibsql = !!process.env.LIBSQL_URL;
 
 declare global {
@@ -10,22 +7,18 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-if (!global.prisma) {
-  if (useLibsql) {
-    // Lazy import to keep dev without these deps
-    const { PrismaLibSQL } = await import("@prisma/adapter-libsql");
+export async function getPrisma(): Promise<PrismaClient> {
+  if (global.prisma) return global.prisma;
 
+  if (useLibsql) {
+    const { PrismaLibSQL } = await import("@prisma/adapter-libsql");
     const adapter = new PrismaLibSQL({
       url: process.env.LIBSQL_URL!,
       authToken: process.env.LIBSQL_AUTH_TOKEN,
     } as any);
-    prisma = new PrismaClient({ adapter } as any);
+    global.prisma = new PrismaClient({ adapter } as any);
   } else {
-    prisma = new PrismaClient();
+    global.prisma = new PrismaClient();
   }
-  global.prisma = prisma;
-} else {
-  prisma = global.prisma;
+  return global.prisma;
 }
-
-export { prisma };
